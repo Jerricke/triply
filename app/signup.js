@@ -1,21 +1,29 @@
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useRouter, Stack } from 'expo-router'
 import { COLORS, SIZES } from '../constants/theme'
-import { createUserWithEmailAndPassword } from "firebase/auth"
-import { FBAUTH } from '../firebaseConfig'
+import { createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth"
+import { FBAUTH, FBDB } from '../firebaseConfig'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { addDoc, collection } from 'firebase/firestore'
 
 const signup = () => {
     const router = useRouter()
     const [email , setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [username, setUsername] = useState("")
+
     const auth = FBAUTH;
 
     function handleReturn() {
         router.push('/login')
     }
 
+    useEffect( () => {
+        onAuthStateChanged(auth, user => { 
+            console.log('Auth change');
+        })
+    }, [])
 
     const handleSignUp = async () => {
         let isSuccess = false;
@@ -28,8 +36,15 @@ const signup = () => {
         }
         if (isSuccess) {
             router.push('/logged-in/home');
+            createUser()
         }
+    }
 
+    const createUser = async () => {
+        const userData = await addDoc(collection(FBDB, "users"), {email: email, username: username});
+        setEmail("")
+        setPassword("")
+        setUsername("")
     }
 
     return (
@@ -41,9 +56,9 @@ const signup = () => {
 
                 <View style={styles.formContainer}>
                     <View style={styles.inputContainer}>
-                        {/* <TextInput style={styles.inputField} placeholder="Username"/> */}
-                        <TextInput style={styles.inputField} autoCapitalize='none' name="email" placeholder="Email" onChangeText={text => setEmail(text)} value={email}/>
-                        <TextInput style={styles.inputField} autoCapitalize='none' name="password" placeholder="Password" onChangeText={text => setPassword(text)} value={password}/>
+                        <TextInput style={styles.inputField} autoCapitalize='none' placeholder="Username" onChangeText={text => setUsername(text)} value={username}/>
+                        <TextInput style={styles.inputField} autoCapitalize='none' placeholder="Email" onChangeText={text => setEmail(text)} value={email}/>
+                        <TextInput style={styles.inputField} autoCapitalize='none' placeholder="Password" onChangeText={text => setPassword(text)} value={password}/>
                         {/* <TextInput style={styles.inputField} placeholder="Location"/> */}
                         {/* <TextInput style={styles.inputField} placeholder="Age"/> */}
                         {/* <TextInput style={[styles.inputField, { height: "auto"}]} multiline={true} placeholder="Personal Bio"/> */}

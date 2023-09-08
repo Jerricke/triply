@@ -1,9 +1,9 @@
 import { KeyboardAvoidingView, StyleSheet, TextInput, View, Text, TouchableOpacity } from 'react-native'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { COLORS, SIZES } from '../../constants/theme'
 import { Stack, useRouter } from "expo-router";
 
-import { signInWithEmailAndPassword } from "firebase/auth"
+import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth"
 import { FBAUTH } from '../../firebaseConfig';
 
 const LoginMenu = () => {
@@ -11,6 +11,12 @@ const LoginMenu = () => {
     const [password, setPassword] = useState("")
     const router = useRouter();
     const auth = FBAUTH;
+
+    useEffect( () => {
+        onAuthStateChanged(auth, user => { 
+            console.log('Auth change');
+        })
+    }, [])
 
     function handleRegisterPress() {
         router.push('/signup');
