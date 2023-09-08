@@ -19,38 +19,35 @@ const signup = () => {
         router.push('/login')
     }
 
+    function handleSignUpClick() {
+        if (username.length <= 6) {
+            alert("Please enter a username longer than 6 characters")
+        } else if (!email) {
+            alert('Email is required.')
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            alert('Email is invalid.')
+        } else if (!password) {
+            alert('Password is required.')
+        } else if (password.length < 6) {
+            alert('Password must be at least 6 characters.')
+        } else {
+            router.push({pathname: '/signupProfile', params: {
+                username: username,
+                email: email,
+                password: password
+            }})
+            setEmail("")
+            setPassword("")
+            setUsername("")
+        }
+    }
+
     // useEffect( () => {
     //     onAuthStateChanged(auth, user => { 
     //         console.log('Auth change');
     //     })
     // }, [])
 
-    const handleSignUp = async () => {
-        // let isSuccess = false;
-        // try {
-        //     const response = await createUserWithEmailAndPassword(auth, email, password)
-        //     console.log(response);
-        //     isSuccess = true;
-        // } catch (err) {
-        //     console.log("Sign up failed: " + err.message);
-        // }
-        // if (isSuccess) {
-        //     router.push('/logged-in/home');
-        //     createUser()
-        // }
-        router.push({pathname: '/signupProfile', params: {
-            username: username,
-            email: email,
-            password: password
-        }})
-    }
-
-    const createUser = async () => {
-        const userData = await addDoc(collection(FBDB, "users"), {email: email, username: username});
-        setEmail("")
-        setPassword("")
-        setUsername("")
-    }
 
     return (
         <SafeAreaView style={styles.sav}>
@@ -64,13 +61,10 @@ const signup = () => {
                         <TextInput style={styles.inputField} autoCapitalize='none' placeholder="Username" onChangeText={text => setUsername(text)} value={username}/>
                         <TextInput style={styles.inputField} autoCapitalize='none' placeholder="Email" onChangeText={text => setEmail(text)} value={email}/>
                         <TextInput style={styles.inputField} autoCapitalize='none' placeholder="Password" onChangeText={text => setPassword(text)} value={password}/>
-                        {/* <TextInput style={styles.inputField} placeholder="Location"/> */}
-                        {/* <TextInput style={styles.inputField} placeholder="Age"/> */}
-                        {/* <TextInput style={[styles.inputField, { height: "auto"}]} multiline={true} placeholder="Personal Bio"/> */}
                     </View>
 
                     <View>
-                        <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+                        <TouchableOpacity style={styles.button} onPress={handleSignUpClick}>
                             <Text>Sign Up</Text>
                         </TouchableOpacity>
                     </View>
