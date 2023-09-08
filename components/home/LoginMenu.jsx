@@ -3,13 +3,31 @@ import React, {useState} from 'react'
 import { COLORS, SIZES } from '../../constants/theme'
 import { Stack, useRouter } from "expo-router";
 
+import { signInWithEmailAndPassword } from "firebase/auth"
+import { FBAUTH } from '../../firebaseConfig';
+
 const LoginMenu = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const router = useRouter();
+    const auth = FBAUTH;
 
     function handleRegisterPress() {
         router.push('/signup');
+    }
+
+    const handleSignIn = async () => {
+        let isSuccess = false;
+        try {
+            const response = await signInWithEmailAndPassword(auth, email, password)
+            console.log(response);
+            isSuccess = true;
+        } catch (err) {
+            alert("Sign in failed: " + err.message)
+        } 
+        if (isSuccess) {
+            router.push('/logged-in/home');
+        }
     }
 
     return (
@@ -18,12 +36,12 @@ const LoginMenu = () => {
         behavior='padding'
         >
             <View style={styles.inputContainer}>
-                <TextInput style={styles.input} placeholder='Email' value={email} onChangeText={text => setEmail(text)}/>
-                <TextInput style={styles.input} placeholder='Password' value={password} onChangeText={text => setPassword(text)}/>
+                <TextInput style={styles.input} autoCapitalize='none' placeholder='Email' value={email} onChangeText={text => setEmail(text)}/>
+                <TextInput style={styles.input} autoCapitalize='none' placeholder='Password' value={password} onChangeText={text => setPassword(text)}/>
             </View>
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={() => {}} >
+                <TouchableOpacity style={styles.button} onPress={handleSignIn} >
                     <Text style={{fontSize: SIZES.medium}}>Login</Text>
                 </TouchableOpacity>
                 <Text style={styles.noAcc}>Dont have an account yet?</Text>

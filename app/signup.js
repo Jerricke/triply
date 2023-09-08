@@ -1,17 +1,35 @@
-import { StyleSheet, View, Text, TextInput, SafeAreaView, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native'
+import React, {useState} from 'react'
 import { useRouter, Stack } from 'expo-router'
 import { COLORS, SIZES } from '../constants/theme'
+import { createUserWithEmailAndPassword } from "firebase/auth"
+import { FBAUTH } from '../firebaseConfig'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const signup = () => {
     const router = useRouter()
+    const [email , setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const auth = FBAUTH;
 
     function handleReturn() {
         router.push('/login')
     }
 
-    function handleSignUp() {
-        console.log("yayeet");
+
+    const handleSignUp = async () => {
+        let isSuccess = false;
+        try {
+            const response = await createUserWithEmailAndPassword(auth, email, password)
+            console.log(response);
+            isSuccess = true;
+        } catch (err) {
+            console.log("Sign up failed: " + err.message);
+        }
+        if (isSuccess) {
+            router.push('/logged-in/home');
+        }
+
     }
 
     return (
@@ -23,12 +41,12 @@ const signup = () => {
 
                 <View style={styles.formContainer}>
                     <View style={styles.inputContainer}>
-                        <TextInput style={styles.inputField} placeholder="Username"/>
-                        <TextInput style={styles.inputField} placeholder="Email"/>
-                        <TextInput style={styles.inputField} placeholder="Password"/>
-                        <TextInput style={styles.inputField} placeholder="Location"/>
-                        <TextInput style={styles.inputField} placeholder="Age"/>
-                        <TextInput style={[styles.inputField, { height: "auto"}]} multiline={true} placeholder="Personal Bio"/>
+                        {/* <TextInput style={styles.inputField} placeholder="Username"/> */}
+                        <TextInput style={styles.inputField} autoCapitalize='none' name="email" placeholder="Email" onChangeText={text => setEmail(text)} value={email}/>
+                        <TextInput style={styles.inputField} autoCapitalize='none' name="password" placeholder="Password" onChangeText={text => setPassword(text)} value={password}/>
+                        {/* <TextInput style={styles.inputField} placeholder="Location"/> */}
+                        {/* <TextInput style={styles.inputField} placeholder="Age"/> */}
+                        {/* <TextInput style={[styles.inputField, { height: "auto"}]} multiline={true} placeholder="Personal Bio"/> */}
                     </View>
 
                     <View>
