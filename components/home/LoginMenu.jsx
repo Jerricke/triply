@@ -12,11 +12,11 @@ const LoginMenu = () => {
     const router = useRouter();
     const auth = FBAUTH;
 
-    useEffect( () => {
-        onAuthStateChanged(auth, user => { 
-            console.log('Auth change');
-        })
-    }, [])
+    // useEffect( () => {
+    //     onAuthStateChanged(auth, user => { 
+    //         console.log('Auth change');
+    //     })
+    // }, [])
 
     function handleRegisterPress() {
         router.push('/signup');

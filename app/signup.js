@@ -19,25 +19,30 @@ const signup = () => {
         router.push('/login')
     }
 
-    useEffect( () => {
-        onAuthStateChanged(auth, user => { 
-            console.log('Auth change');
-        })
-    }, [])
+    // useEffect( () => {
+    //     onAuthStateChanged(auth, user => { 
+    //         console.log('Auth change');
+    //     })
+    // }, [])
 
     const handleSignUp = async () => {
-        let isSuccess = false;
-        try {
-            const response = await createUserWithEmailAndPassword(auth, email, password)
-            console.log(response);
-            isSuccess = true;
-        } catch (err) {
-            console.log("Sign up failed: " + err.message);
-        }
-        if (isSuccess) {
-            router.push('/logged-in/home');
-            createUser()
-        }
+        // let isSuccess = false;
+        // try {
+        //     const response = await createUserWithEmailAndPassword(auth, email, password)
+        //     console.log(response);
+        //     isSuccess = true;
+        // } catch (err) {
+        //     console.log("Sign up failed: " + err.message);
+        // }
+        // if (isSuccess) {
+        //     router.push('/logged-in/home');
+        //     createUser()
+        // }
+        router.push({pathname: '/signupProfile', params: {
+            username: username,
+            email: email,
+            password: password
+        }})
     }
 
     const createUser = async () => {
@@ -49,7 +54,7 @@ const signup = () => {
 
     return (
         <SafeAreaView style={styles.sav}>
-            <View style={{flex: 1}}>
+            <View style={{flex: 1 }}>
                 <TouchableOpacity style={styles.returner} onPress={handleReturn}>
                     <Text style={{ color: COLORS.bg2, fontSize: SIZES.medium}}>Return</Text>
                 </TouchableOpacity>
