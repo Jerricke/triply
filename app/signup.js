@@ -19,11 +19,11 @@ const signup = () => {
         router.push('/login')
     }
 
-    useEffect( () => {
-        onAuthStateChanged(auth, user => { 
-            console.log('Auth change');
-        })
-    }, [])
+    // useEffect( () => {
+    //     onAuthStateChanged(auth, user => { 
+    //         console.log('Auth change');
+    //     })
+    // }, [])
 
     const handleSignUp = async () => {
         let isSuccess = false;
