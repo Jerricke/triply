@@ -23,16 +23,17 @@ const LoginMenu = () => {
     }
 
     const handleSignIn = async () => {
+        let uid;
         let isSuccess = false;
         try {
             const response = await signInWithEmailAndPassword(auth, email, password)
-            console.log(response);
             isSuccess = true;
+            uid = response.user.uid
         } catch (err) {
             alert("Sign in failed: " + err.message)
         } 
         if (isSuccess) {
-            router.push('/logged-in/home');
+            router.push({pathname: '/logged-in/home', params: {userUID: uid}});
         }
     }
 

@@ -5,7 +5,6 @@ import { COLORS, SIZES } from '../constants/theme'
 import { createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth"
 import { FBAUTH, FBDB } from '../firebaseConfig'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { addDoc, collection } from 'firebase/firestore'
 
 const signup = () => {
     const router = useRouter()

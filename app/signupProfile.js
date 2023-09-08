@@ -4,48 +4,53 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth"
 import { FBAUTH, FBDB } from '../firebaseConfig'
+import { addDoc, collection } from 'firebase/firestore'
 
 import { COLORS, SIZES } from "../constants/theme"
 
 const signupProfile = () => {
     const router = useRouter()
     const data = useLocalSearchParams()
-    console.log(data);
+    const auth = FBAUTH;
 
-    const [age, setAge] = useState("")
+    const [age, setAge] = useState(0)
     const [location, setLocation] = useState("")
     const [bio, setBio] = useState("")
 
     const handleSignUp = async () => {
-        // let isSuccess = false;
-        // try {
-        //     const response = await createUserWithEmailAndPassword(auth, data.email, data.password)
-        //     console.log(response);
-        //     isSuccess = true;
-        // } catch (err) {
-        //     console.log("Sign up failed: " + err.message);
-        // }
-        // if (isSuccess) {
-        //     router.push('/logged-in/home');
-        //     createUser()
-        // }
+        let isSuccess = false;
+        let uid;
+        try {
+            const response = await createUserWithEmailAndPassword(auth, data.email, data.password)
+            uid = response.user.uid
+            isSuccess = true;
+        } catch (err) {
+            console.log("Sign up failed: " + err.message);
+        }
+        if (isSuccess) {
+            createUser(uid)
+            router.push({pathname: '/logged-in/home', params: {
+                userUID: uid,
+            }});
+        }
     }
     
-    const createUser = async () => {
-        const userData = await addDoc(collection(FBDB, "users"), {email: data.email, username: data.username});
+    const createUser = async (uid) => {
+        const userData = await addDoc(collection(FBDB, "users"), {email: data.email, username: data.username, location: location, age: age, bio: bio, uid: uid});
     }
+
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{flex: 1}}>
             <View style={styles.formContainer}>
                     <View style={styles.inputContainer}>
-                        <TextInput style={styles.inputField} placeholder="Location"/>
-                        <TextInput style={styles.inputField} placeholder="Age"/>
-                        <TextInput style={[styles.inputField, { height: "auto"}]} multiline={true} placeholder="Personal Bio"/>
+                        <TextInput style={styles.inputField} placeholder="Location" onChangeText={text => setLocation(text)} value={location}/>
+                        <TextInput style={styles.inputField} keyboardType='numeric' placeholder="Age" onChangeText={text => setAge(parseInt(text))} value={parseInt(age)}/>
+                        <TextInput style={[styles.inputField, { height: "auto"}]} multiline={true} placeholder="Personal Bio" onChangeText={text => setBio(text)} value={bio}/>
                     </View>
 
                     <View>
                         <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-                            <Text>Sign Up</Text>
+                            <Text>Complete Sign Up</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

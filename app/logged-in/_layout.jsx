@@ -1,9 +1,11 @@
-import { Stack } from "expo-router";
+import { Tabs } from "expo-router";
 
 export default function LoggedInLayout () {
     return (
-        <Stack screenOptions={{headerShown: false}}>
-            <Stack.Screen name="home" />
-        </Stack>
+        <Tabs screenOptions={{headerShown: false}}>
+            <Tabs.Screen name="home" />
+            <Tabs.Screen name="startATrip" />
+            <Tabs.Screen name="currentUserProfile" />
+        </Tabs>
     )
 }
