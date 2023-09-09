@@ -36,7 +36,7 @@ const signupProfile = () => {
     }
     
     const createUser = async (uid) => {
-        const userData = await addDoc(collection(FBDB, "users"), {email: data.email, username: data.username, location: location, age: age, bio: bio, uid: uid});
+        const userData = await addDoc(collection(FBDB, "users"), {email: data.email, username: data.username, location: location, age: age, bio: bio, uid: uid, distance_traveled: 0});
     }
 
     return (
