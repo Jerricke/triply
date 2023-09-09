@@ -14,11 +14,14 @@ const LoginMenu = () => {
     const auth = FBAUTH;
     const { setUserID } = useUser()
 
-    // useEffect( () => {
-    //     onAuthStateChanged(auth, user => { 
-    //         console.log('Auth change');
-    //     })
-    // }, [])
+    useEffect( () => {
+        onAuthStateChanged(auth, user => { 
+            if (user?.uid) {
+                setUserID(user.uid);
+                router.push('/logged-in/home')
+            } 
+        })
+    }, [])
 
     function handleRegisterPress() {
         router.push('/signup');

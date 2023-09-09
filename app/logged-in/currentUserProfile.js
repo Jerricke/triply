@@ -1,6 +1,6 @@
-import { View, ActivityIndicator, StyleSheet } from 'react-native'
+import { TouchableOpacity, View, ActivityIndicator, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useGlobalSearchParams, useLocalSearchParams } from 'expo-router'
+import { useGlobalSearchParams, useLocalSearchParams, useRouter } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { FBDB } from '../../firebaseConfig'
 import { getDocs, query, collection, where } from 'firebase/firestore'
@@ -8,6 +8,9 @@ import { FlatList } from 'react-native-gesture-handler'
 import { Avatar, Text } from 'react-native-paper';
 import { COLORS, SIZES } from '../../constants/theme'
 import useUser from '../../context/user/useUser'
+import { signOut } from "firebase/auth";
+import { FBAUTH } from '../../firebaseConfig'
+
 
 const currentUserProfile = () => {
     const loc = useLocalSearchParams()
@@ -16,27 +19,20 @@ const currentUserProfile = () => {
     const [userData, setUserData] = useState({})
     const [isLoading, setIsLoading] = useState(false)
     const { profile } = useUser();
+    const auth = FBAUTH
+    const router = useRouter()
 
     console.log(profile)
 
-    const getUserData = async () => {
-        setIsLoading(true)
-        const q = query(collection(FBDB, "users"), where("uid", "==", userUID));
-        // const q = collection(FIRESTORE_DB, "todos")
-        const querySnapshot =  await getDocs(q);
-        // console.log(querySnapshot)
-        // return querySnapshot
-        let tempArray = []
-        querySnapshot.forEach( doc => {
-            tempArray.push(doc.data())
-        }) 
-        setUserData(tempArray[0])
+    const handleSignOut = () => {
+        signOut(auth).then(() => {
+        // Sign-out successful.
+            router.push('/login')
+        }).catch((error) => {
+        // An error happened.
+            alert(error.message)
+        })
     }
-
-    useEffect( () => {
-        getUserData();
-        setTimeout(() => setIsLoading(false), 500)
-    }, [])
 
     if (isLoading) {
         return (
@@ -65,6 +61,12 @@ const currentUserProfile = () => {
                         <Text variant='titleMedium'>{userData.bio}</Text>
                     </View>
                 </View>
+            </View>
+
+            <View>
+                <TouchableOpacity>
+                    <Text onPress={handleSignOut}>Log Out</Text>
+                </TouchableOpacity>
             </View>
 
             <View style={styles.tripContainer}>
