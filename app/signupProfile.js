@@ -4,14 +4,16 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth"
 import { FBAUTH, FBDB } from '../firebaseConfig'
-import { addDoc, collection } from 'firebase/firestore'
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 
 import { COLORS, SIZES } from "../constants/theme"
+import useUser from '../context/user/useUser';
 
 const signupProfile = () => {
     const router = useRouter()
     const data = useLocalSearchParams()
     const auth = FBAUTH;
+    const { setUserID, setProfile } = useUser();
 
     const [age, setAge] = useState(0)
     const [location, setLocation] = useState("")
@@ -36,7 +38,16 @@ const signupProfile = () => {
     }
     
     const createUser = async (uid) => {
-        const userData = await addDoc(collection(FBDB, "users"), {email: data.email, username: data.username, location: location, age: age, bio: bio, uid: uid, distance_traveled: 0});
+        const userCollection = collection(FBDB, 'users');
+        const profile = {email: data.email,
+                    username: data.username,
+                    location: location, 
+                    age: age, bio: bio, 
+                    distance_traveled: 0}
+        const userRef = doc(userCollection, uid)
+        const userData = await setDoc(userRef, profile);
+        setUserID(uid)
+        
     }
 
     return (

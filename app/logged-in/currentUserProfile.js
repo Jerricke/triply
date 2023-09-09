@@ -7,13 +7,17 @@ import { getDocs, query, collection, where } from 'firebase/firestore'
 import { FlatList } from 'react-native-gesture-handler'
 import { Avatar, Text } from 'react-native-paper';
 import { COLORS, SIZES } from '../../constants/theme'
+import useUser from '../../context/user/useUser'
 
 const currentUserProfile = () => {
+    const loc = useLocalSearchParams()
     const glob = useGlobalSearchParams()
     const userUID = glob.path.split('=')[1]
     const [userData, setUserData] = useState({})
     const [isLoading, setIsLoading] = useState(false)
+    const { profile } = useUser();
 
+    console.log(profile)
 
     const getUserData = async () => {
         setIsLoading(true)
@@ -85,8 +89,6 @@ const styles = StyleSheet.create({
         paddingLeft: "10%",
         backgroundColor: COLORS.bg1,
 
-    },
-    pfpIcon: {
     },
     bodyContainer: {
         alignItems: 'center',

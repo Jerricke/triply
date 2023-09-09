@@ -5,12 +5,14 @@ import { Stack, useRouter } from "expo-router";
 
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth"
 import { FBAUTH } from '../../firebaseConfig';
+import useUser from '../../context/user/useUser';
 
 const LoginMenu = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const router = useRouter();
     const auth = FBAUTH;
+    const { setUserID } = useUser()
 
     // useEffect( () => {
     //     onAuthStateChanged(auth, user => { 
@@ -29,6 +31,7 @@ const LoginMenu = () => {
             const response = await signInWithEmailAndPassword(auth, email, password)
             isSuccess = true;
             uid = response.user.uid
+            setUserID(uid)
         } catch (err) {
             alert("Sign in failed: " + err.message)
         } 

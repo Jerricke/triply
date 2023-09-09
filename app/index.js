@@ -3,6 +3,6 @@ import { StyleSheet, Text, View } from "react-native";
 
 export default function Page() {
   return (
-    <Redirect href="/login" />
+      <Redirect href="/login" />
   );
 }
