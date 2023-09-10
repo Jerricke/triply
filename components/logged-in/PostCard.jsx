@@ -1,15 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 
-const PostCard = ({post}) => {
+const PostCard = ({ post }) => {
     console.log(post);
-    return (
-        <View>
+    return <View />;
+};
 
-        </View>
-    )
-}
+export default PostCard;
 
-export default PostCard
-
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
