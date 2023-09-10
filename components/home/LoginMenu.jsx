@@ -1,9 +1,9 @@
 import { KeyboardAvoidingView, StyleSheet, TextInput, View, Text, TouchableOpacity } from 'react-native'
 import React, {useEffect, useState} from 'react'
 import { COLORS, SIZES } from '../../constants/theme'
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth"
+import { signInWithEmailAndPassword } from "firebase/auth"
 import { FBAUTH } from '../../firebaseConfig';
 import useUser from '../../context/user/useUser';
 
@@ -13,15 +13,6 @@ const LoginMenu = () => {
     const router = useRouter();
     const auth = FBAUTH;
     const { setUserID } = useUser()
-
-    useEffect( () => {
-        onAuthStateChanged(auth, user => { 
-            if (user?.uid) {
-                setUserID(user.uid);
-                router.push('/logged-in/home')
-            } 
-        })
-    }, [])
 
     function handleRegisterPress() {
         router.push('/signup');

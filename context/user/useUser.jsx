@@ -30,8 +30,8 @@ export const UserProvider = ({ children }) => {
 
     return (
         <UserContext.Provider
-            value={{userID, setUserID, profile, setProfile
-            }}>
+            value={{userID, setUserID, profile, setProfile}}
+        >
                 {children}
         </UserContext.Provider>
     ) 
