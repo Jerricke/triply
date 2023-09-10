@@ -28,12 +28,20 @@ const home = () => {
         }
     }
     return (
-        <SafeAreaView>
-            <FlatList 
-                data={displayData}
-                renderItem={ ({item}) => <PostCard post={item}/>}
-                keyExtractor={ post => post.id}
-            />
+        <SafeAreaView style={{flex: 1}}>
+            <View style={{flex: 1, borderColor: "black", borderWidth: 2}}>
+                <Text>test Navigation box</Text>
+            </View>
+            <View style={{flex: 9}}>
+                <FlatList 
+                    data={displayData}
+                    renderItem={ ({item}) => <PostCard post={item}/>}
+                    keyExtractor={ post => post.id}
+                />
+            </View>
+            <View style={{flex: 2, borderColor: "black", borderWidth: 2}}>
+                <Text>test new post box</Text>
+            </View>
         </SafeAreaView>
     )
 }
