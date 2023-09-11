@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  extends: ["universe/native", 'plugin:prettier/recommended', 'airbnb', 'airbnb/hooks'],
+  extends: ["universe/native", 'plugin:prettier/recommended'],
   plugins: ['prettier'],
   rules: {
     "eslint-disable-next-line react-hooks/rules-of-hooks": 0,
