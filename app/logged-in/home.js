@@ -2,7 +2,7 @@ import { FlatList, View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { FBDB } from '../../firebaseConfig'
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, onSnapshot, docs } from "firebase/firestore";
 import PostCard from '../../components/logged-in/PostCard';
 import NewPost from '../../components/logged-in/newPost';
 import { COLORS } from '../../constants/theme';
@@ -12,23 +12,39 @@ const home = () => {
     const [displayData, setDisplayData] = useState(null)
 
     useEffect( () => {
-        getData();
+        const ref = collection(FBDB, "community-posts")
+
+        const subscriber = onSnapshot(ref, {
+            next: (snapshot) => {
+                const posts = [];
+                // console.log(snapshot)
+                snapshot.docs.forEach(doc => {
+                    posts.push({
+                        id: doc.id,
+                        ...doc.data()
+                    })
+                })
+                setDisplayData(posts)
+            }
+        })
+        return () => subscriber();
     },[])
 
-    const getData = async () => {
-        const querySnapshot = await getDocs(collection(FBDB, "community-posts"));
-        if (querySnapshot) {
-            const temp = [];
-            querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-                temp.push(doc.data());
-            });
-            setDisplayData(temp);
-            console.log({temp, displayData});
-        } else {
-            alert("error")
-        }
-    }
+    // const getData = async () => {
+    //     const querySnapshot = await getDocs(collection(FBDB, "community-posts"));
+    //     if (querySnapshot) {
+    //         const temp = [];
+    //         querySnapshot.forEach((doc) => {
+    //         // doc.data() is never undefined for query doc snapshots
+    //             temp.push(doc.data());
+    //         });
+    //         setDisplayData(temp);
+    //         console.log({temp, displayData});
+    //     } else {
+    //         alert("error")
+    //     }
+    // }
+    
     return (
         <SafeAreaView style={{backgroundColor: COLORS.bg1,}}>
             <View style={{height: "10%", borderColor: "black", borderWidth: 2}}>
