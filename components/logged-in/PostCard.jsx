@@ -5,7 +5,8 @@ import { COLORS, SIZES } from "../../constants/theme"
 import { Card, Avatar, IconButton } from "react-native-paper";
 import { Octicons } from "@expo/vector-icons";
 import useUser from "../../context/user/useUser";
-
+import { deleteDoc, doc, setDoc } from "firebase/firestore";
+import { FBDB } from "../../firebaseConfig";
 
 const PostCard = ({ post }) => {
     const { userID } = useUser()
@@ -15,6 +16,7 @@ const PostCard = ({ post }) => {
 
     let isOwner = false
 
+    // console.log(post);
     // console.log(userID, " split ", post.user_id);
 
     if (userID === post.user_id) {
@@ -25,8 +27,13 @@ const PostCard = ({ post }) => {
         setEditing(true);
     };
   
-    const handleSave = () => {
+    const handleSave = async () => {
+        await setDoc(doc(FBDB, "community-posts", `${post.id}`), {
+            ...post,
+            content: text
+          });
         setEditing(false);
+
     };
   
     const handleChangeText = (newText) => {
@@ -36,6 +43,10 @@ const PostCard = ({ post }) => {
     const showContent = () => {
 
     };
+
+    const handleDelete = async () => {
+        await deleteDoc(doc(FBDB, "community-posts", `${post.id}`));
+    }; 
 
 
     return (
@@ -56,13 +67,13 @@ const PostCard = ({ post }) => {
                                 icon="check"
                                 iconColor={COLORS.fg2}
                                 size={24}
-                                onPress={() => setEditing(false)}
+                                onPress={handleSave}
                             />
                             <IconButton
                                 icon="trash-can"
                                 iconColor={COLORS.fg2}
                                 size={24}
-                                onPress={() => setEditing(false)}
+                                onPress={handleDelete}
                             />
                         </View>
                     </View>

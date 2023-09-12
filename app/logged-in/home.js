@@ -51,14 +51,14 @@ const home = () => {
                 <View style={{height: "10%", borderColor: "black", borderWidth: 2}}>
                     <Text>test Navigation box</Text>
                 </View>
-                <View style={{height: "75%"}}>
+                <View style={{height: "70%"}}>
                     <FlatList 
                         data={displayData}
                         renderItem={ ({item}) => <PostCard post={item}/>}
                         keyExtractor={ post => post.id}
                     />
                 </View>
-                <View style={{height: "15%"}}>
+                <View style={{height: "20%"}}>
                     <NewPost />
                 </View>
             </SafeAreaView>
