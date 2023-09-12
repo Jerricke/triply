@@ -22,14 +22,14 @@ import { FBDB, FBAUTH } from "../../firebaseConfig";
 
 const currentUserProfile = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const { profile } = useUser();
+    const { profile, setUserID } = useUser();
     const auth = FBAUTH;
     const router = useRouter();
 
     const handleSignOut = () => {
         signOut(auth)
         .then(() => {
-            // Sign-out successful.
+            setUserID(null);
             router.push("/login");
         })
         .catch((error) => {
