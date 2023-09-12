@@ -1,4 +1,4 @@
-import { FlatList, View, Text } from 'react-native'
+import { FlatList, View, Text, KeyboardAvoidingView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { FBDB } from '../../firebaseConfig'
@@ -44,23 +44,25 @@ const home = () => {
     //         alert("error")
     //     }
     // }
-    
+
     return (
-        <SafeAreaView style={{backgroundColor: COLORS.bg1,}}>
-            <View style={{height: "10%", borderColor: "black", borderWidth: 2}}>
-                <Text>test Navigation box</Text>
-            </View>
-            <View style={{height: "75%"}}>
-                <FlatList 
-                    data={displayData}
-                    renderItem={ ({item}) => <PostCard post={item}/>}
-                    keyExtractor={ post => post.id}
-                />
-            </View>
-            <View style={{height: "15%"}}>
-                <NewPost />
-            </View>
-        </SafeAreaView>
+        <KeyboardAvoidingView  behavior="padding">
+            <SafeAreaView style={{backgroundColor: COLORS.bg1,}}>
+                <View style={{height: "10%", borderColor: "black", borderWidth: 2}}>
+                    <Text>test Navigation box</Text>
+                </View>
+                <View style={{height: "75%"}}>
+                    <FlatList 
+                        data={displayData}
+                        renderItem={ ({item}) => <PostCard post={item}/>}
+                        keyExtractor={ post => post.id}
+                    />
+                </View>
+                <View style={{height: "15%"}}>
+                    <NewPost />
+                </View>
+            </SafeAreaView>
+        </KeyboardAvoidingView>
     )
 }
 

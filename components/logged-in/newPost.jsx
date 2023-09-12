@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: '15%',
         width: '90%',
-        backgroundColor: COLORS.fg1,
+        backgroundColor: COLORS.fg2,
     },
     textInput: {
         marginTop: 10,
