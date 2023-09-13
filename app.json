@@ -30,13 +30,15 @@
     "plugins": [
       "expo-router",
       [
-      "expo-image-picker",
+        "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
-      ]
+      ],
+      "react-native-background-geolocation",
+      "react-native-background-fetch",
+      "expo-gradle-ext-vars"
     ],
     "typings": "./dist/rn/index.rn.d.ts"
   }
-  
 }
