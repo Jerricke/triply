@@ -54,7 +54,7 @@ const currentUserProfile = () => {
         <SafeAreaView style={styles.mainContainer}>
         <View style={styles.pfpContainer}>
             {/* will change into image soon */}
-            <Avatar.Text style={styles?.pfpIcon} size={100} label="JE" />
+            <Avatar.Image style={styles?.pfpIcon} size={100} source={{uri: profile.profile_pic}} />
         </View>
         <View style={styles.bodyContainer}>
             <View style={styles.profile}>

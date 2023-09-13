@@ -95,7 +95,7 @@ const PostCard = ({ post }) => {
                             title = {post?.user_username}
                             subtitle = {text}
                             subtitleNumberOfLines= {isShow ? null : 4}
-                            left={ () => <Avatar.Icon size={50} icon={(<Octicons name="person" size={12} color="black"/>)}/>}
+                            left={ () => <Avatar.Image size={50} source={{uri: post.user_profile_pic}}/>}
                             />
                         </TouchableOpacity>
                     </View>

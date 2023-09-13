@@ -17,6 +17,7 @@ const NewPost = () => {
             user_id: userID,
             user_username: profile.username,
             created_at: serverTimestamp(),
+            user_profile_pic: profile.profile_pic,
         }
         const ref = collection(FBDB, "community-posts")
         const useRef = await addDoc(ref, post)
