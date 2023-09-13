@@ -22,9 +22,13 @@ import { FBDB, FBAUTH } from "../../firebaseConfig";
 
 const currentUserProfile = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const { profile, setUserID } = useUser();
+    const { profile, setUserID, getUserData } = useUser();
     const auth = FBAUTH;
     const router = useRouter();
+
+    useEffect( () => {
+        getUserData()
+    }, [])
 
     const handleSignOut = () => {
         signOut(auth)

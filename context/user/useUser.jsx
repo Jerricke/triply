@@ -25,13 +25,14 @@ export const UserProvider = ({ children }) => {
         } else {
         // docSnap.data() will be undefined in this case
             console.log("ERROR: idk tbh something is wrong");
+            setUserID(userID)
         }
     }
 
 
     return (
         <UserContext.Provider
-            value={{userID, setUserID, profile, setProfile}}
+            value={{userID, setUserID, profile, setProfile, getUserData}}
         >
                 {children}
         </UserContext.Provider>
