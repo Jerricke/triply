@@ -51,15 +51,17 @@ const signupProfile = () => {
             data.password,
         );
         uid = response.user.uid;
+        createUser(uid);
         isSuccess = true;
         } catch (err) {
         console.log("Sign up failed: " + err.message);
         }
-        if (isSuccess) {
-        createUser(uid);
-        // setUserID(uid)
-
-        }
+        setTimeout( () => {
+            if (isSuccess) {
+                router.push({pathname: '/logged-in/home', params: {uid: uid}});
+                setUserID(uid);
+            }
+        }, 3000)
     };
 
     const createUser = async (uid) => {
@@ -77,7 +79,6 @@ const signupProfile = () => {
         };
         const userRef = doc(userCollection, uid);
         const userData = await setDoc(userRef, profile);
-        setUserID(uid);
     };
 
     const pickImage = async () => {

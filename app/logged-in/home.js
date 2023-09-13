@@ -9,6 +9,7 @@ import { COLORS } from '../../constants/theme';
 
 
 const home = () => {
+
     const [displayData, setDisplayData] = useState(null)
 
     useEffect( () => {
