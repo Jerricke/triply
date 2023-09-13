@@ -20,6 +20,7 @@ const NewPost = () => {
         }
         const ref = collection(FBDB, "community-posts")
         const useRef = await addDoc(ref, post)
+        setContent("")
     }
 
     return (

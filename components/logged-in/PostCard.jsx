@@ -41,7 +41,7 @@ const PostCard = ({ post }) => {
     };
 
     const showContent = () => {
-
+        setIsShow(!isShow);
     };
 
     const handleDelete = async () => {
@@ -94,7 +94,7 @@ const PostCard = ({ post }) => {
                             key={post?.id}
                             title = {post?.user_username}
                             subtitle = {text}
-                            subtitleNumberOfLines= {isShow ? auto : 5}
+                            subtitleNumberOfLines= {isShow ? null : 4}
                             left={ () => <Avatar.Icon size={50} icon={(<Octicons name="person" size={12} color="black"/>)}/>}
                             />
                         </TouchableOpacity>
