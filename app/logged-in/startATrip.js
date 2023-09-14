@@ -1,94 +1,112 @@
+import React, { Component } from "react";
+import { StyleSheet, View } from "react-native";
+import { AsyncStorage } from '@react-native-async-storage/async-storage'
+import MapView from "react-native-maps";
+import * as Location from "expo-location";
+import * as Permissions from "expo-permissions";
+import * as TaskManager from "expo-task-manager";
+import axios  from "axios";
 
-import React from 'react';
-import {
-  Switch,
-  Text,
-  View,
-} from 'react-native';
+const LOCATION_TASK_NAME = "background-location-task";
 
-import BackgroundGeolocation, {
-  Location,
-  Subscription
-} from "react-native-background-geolocation";
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      region: null,
+      error: '',
+    };
+  }
 
-const HelloWorld = () => {
-  const [enabled, setEnabled] = React.useState(false);
-  const [location, setLocation] = React.useState('');
-
-  React.useEffect(() => {
-    /// 1.  Subscribe to events.
-    const onLocation:Subscription = BackgroundGeolocation.onLocation((location) => {
-      console.log('[onLocation]', location);
-      setLocation(JSON.stringify(location, null, 2));
-    })
-
-    const onMotionChange:Subscription = BackgroundGeolocation.onMotionChange((event) => {
-      console.log('[onMotionChange]', event);
+  _getLocationAsync = async () => {
+    await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+      enableHighAccuracy: true,
+      distanceInterval: 1,
+      timeInterval: 50000
     });
-
-    const onActivityChange:Subscription = BackgroundGeolocation.onActivityChange((event) => {
-      console.log('[onActivityChange]', event);
-    })
-
-    const onProviderChange:Subscription = BackgroundGeolocation.onProviderChange((event) => {
-      console.log('[onProviderChange]', event);
-    })
-
-    /// 2. ready the plugin.
-    BackgroundGeolocation.ready({
-      // Geolocation Config
-      desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
-      distanceFilter: 10,
-      // Activity Recognition
-      stopTimeout: 5,
-      // Application config
-      debug: true, // <-- enable this hear sounds for background-geolocation life-cycle.
-      logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
-      stopOnTerminate: false,   // <-- Allow the background-service to continue tracking when user closes the app.
-      startOnBoot: true,        // <-- Auto start tracking when device is powered-up.
-      // HTTP / SQLite config
-      url: 'http://yourserver.com/locations',
-      batchSync: false,       // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
-      autoSync: true,         // <-- [Default: true] Set true to sync each location to server as it arrives.
-      headers: {              // <-- Optional HTTP headers
-        "X-FOO": "bar"
+    // watchPositionAsync Return Lat & Long on Position Change
+    this.location = await Location.watchPositionAsync(
+      {
+        enableHighAccuracy: true,
+        distanceInterval: 1,
+        timeInterval: 60000
       },
-      params: {               // <-- Optional HTTP params
-        "auth_token": "maybe_your_server_authenticates_via_token_YES?"
-      }
-    }).then((state) => {
-      setEnabled(state.enabled)
-      console.log("- BackgroundGeolocation is configured and ready: ", state.enabled);
-    });
+      newLocation => {
+        let { coords } = newLocation;
+        // console.log(coords);
+        let region = {
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          latitudeDelta: 0.045,
+          longitudeDelta: 0.045
+        };
+        this.setState({ region: region });
+      },
+      error => console.log(error)
+    );
+    return this.location;
+  };
 
-    return () => {
-      // Remove BackgroundGeolocation event-subscribers when the View is removed or refreshed
-      // during development live-reload.  Without this, event-listeners will accumulate with
-      // each refresh during live-reload.
-      onLocation.remove();
-      onMotionChange.remove();
-      onActivityChange.remove();
-      onProviderChange.remove();
-    }
-  }, []);
+  async componentWillMount() {
+    // Asking for device location permission
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
 
-  /// 3. start / stop BackgroundGeolocation
-  React.useEffect(() => {
-    if (enabled) {
-      BackgroundGeolocation.start();
+    if (status === "granted") {
+      this._getLocationAsync();
     } else {
-      BackgroundGeolocation.stop();
-      setLocation('');
+      this.setState({ error: "Locations services needed" });
     }
-  }, [enabled]);
+    userId = (await AsyncStorage.getItem("userId")) || "none";
+    userName = (await AsyncStorage.getItem("userName")) || "none";
+  }
 
-  return (
-    <View style={{alignItems:'center'}}>
-      <Text>Click to enable BackgroundGeolocation</Text>
-      <Switch value={enabled} onValueChange={setEnabled} />
-      <Text style={{fontFamily:'monospace', fontSize:12}}>{location}</Text>
-    </View>
-  )
+  render() {
+    return (
+      <View style={styles.container}>
+        <MapView
+          initialRegion={this.state.region}
+          showsCompass={true}
+          showsUserLocation={true}
+          rotateEnabled={true}
+          ref={map => {
+            this.map = map;
+          }}
+          style={{ flex: 1 }}
+        />
+      </View>
+    );
+  }
 }
 
-export default HelloWorld;
+TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
+  if (error) {
+    console.log(error);
+    return;
+  }
+  if (data) {
+    const { locations } = data;
+    let lat = locations[0].coords.latitude;
+    let long = locations[0].coords.longitude;
+    userId = (await AsyncStorage.getItem("userId")) || "none";
+
+    // Storing Received Lat & Long to DB by logged In User Id
+    axios({
+      method: "POST",
+      url: "http://000.000.0.000/phpServer/ajax.php",
+      data: {
+        action: "saveLocation",
+        userId: userId,
+        lat,
+        long
+      }
+    });
+    // console.log("Received new locations for user = ", userId, locations);
+  }
+});
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff"
+  }
+})
