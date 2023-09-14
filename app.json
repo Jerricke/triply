@@ -16,7 +16,21 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+         "NSLocationAlwaysAndWhenInUseUsageDescription": "[CHANGEME] This app requires location in the background",
+         "NSLocationWhenInUseUsageDescription": "[CHANGEME] This app requires location while in use",
+         "NSMotionUsageDescription": "[CHANGEME] This app uses motion-detection to determine the motion-activity of the device (walking, vehicle, bicycle, etc)",
+         "UIBackgroundModes": [
+             "location",
+             "fetch",
+             "processing"
+           ],
+           "BGTaskSchedulerPermittedIdentifiers": [
+             "com.transistorsoft.fetch",
+             "com.transistorsoft.customtask"
+           ]
+       }
     },
     "android": {
       "adaptiveIcon": {
@@ -37,7 +51,19 @@
       ],
       "react-native-background-geolocation",
       "react-native-background-fetch",
-      "expo-gradle-ext-vars"
+      "expo-gradle-ext-vars",
+      [
+         "react-native-background-geolocation", {
+           "license": "YOUR_LICENSE_KEY_HERE"
+         }
+       ],
+       [
+         "expo-gradle-ext-vars", {
+           "googlePlayServicesLocationVersion": "20.0.0",
+           "appCompatVersion": "1.4.2"
+         }
+       ],
+       "react-native-background-fetch"
     ],
     "typings": "./dist/rn/index.rn.d.ts"
   }
